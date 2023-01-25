@@ -3,7 +3,7 @@
         "role": "arn:aws:iam::808225968452:role/ExampleGithubRole",
         "region": "ap-northeast-1",
         "state_bucket":"aws-proton-terraform-bucket-808225968452"
-    }
+    },
     "tesaki-test-tf-ec2-ecs": {
         "role": "arn:aws:iam::808225968452:role/ExampleGithubRole",
         "region": "ap-northeast-1",

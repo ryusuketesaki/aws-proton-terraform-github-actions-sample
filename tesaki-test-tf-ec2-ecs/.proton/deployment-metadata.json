@@ -1,10 +1,10 @@
 {
-  "deploymentId" : "073f4b3b-f82e-4954-99ae-7e149f01a2cd",
+  "deploymentId" : "2aa3835c-4b43-4699-ab34-7e5e5f7c57be",
   "isResourceDeleted" : false,
   "resourceMetadata" : {
     "arn" : "arn:aws:proton:ap-northeast-1:808225968452:environment/tesaki-test-tf-ec2-ecs",
     "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:environment-template/ecs-ec2-env",
     "templateMajorVersion" : "1",
-    "templateMinorVersion" : "0"
+    "templateMinorVersion" : "1"
   }
 }

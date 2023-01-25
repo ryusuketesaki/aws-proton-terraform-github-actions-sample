@@ -128,7 +128,7 @@ resource "aws_lambda_function" "ecs_drain_function" {
   role          = aws_iam_role.ecs_drain_hook_function_service_role.arn
   filename      = data.archive_file.ecs_drain_hook_function.output_path
   handler       = "ecs_drain_hook_lambda.lambda_handler"
-  runtime       = "python3.6"
+  runtime       = "python3.9"
   timeout       = 310
 
   environment {

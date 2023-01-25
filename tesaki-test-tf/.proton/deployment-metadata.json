@@ -1,6 +1,6 @@
 {
-  "deploymentId" : "0d656c52-93a3-4129-ba7c-c58f0f525765",
-  "isResourceDeleted" : false,
+  "deploymentId" : "<proton-resource-deleted>",
+  "isResourceDeleted" : true,
   "resourceMetadata" : {
     "arn" : "arn:aws:proton:ap-northeast-1:808225968452:environment/tesaki-test-tf",
     "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:environment-template/lambda-vpc-sample-vpc-environment-template-v2",

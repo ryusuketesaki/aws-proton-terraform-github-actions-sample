@@ -6,28 +6,9 @@ To manage this resource, see AWS Proton Resource: arn:aws:proton:ap-northeast-1:
 If the resource is no longer accessible within AWS Proton, it may have been deleted and may require manual cleanup.
 */
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.4.0"
-    }
-  }
-
-  backend "s3" {}
-}
-
-# Configure the AWS Provider
-provider "aws" {
-  region = var.aws_region
-  default_tags {
-    tags = {
-      "proton:environment" = var.environment.name
-    }
-  }
-}
-
-variable "aws_region" {
-  type    = string
-  default = "us-east-1"
+locals {
+  account_id           = data.aws_caller_identity.current.account_id
+  region               = data.aws_region.current.id
+  partition            = data.aws_partition.current.id
+  partition_url_suffix = data.aws_partition.current.dns_suffix
 }

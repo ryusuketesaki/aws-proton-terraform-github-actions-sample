@@ -1,6 +1,6 @@
 {
-  "deploymentId" : "<proton-resource-deleted>",
-  "isResourceDeleted" : true,
+  "deploymentId" : "37dd1025-2e2e-48a7-9180-f5dbfa86a98c",
+  "isResourceDeleted" : false,
   "resourceMetadata" : {
     "arn" : "arn:aws:proton:ap-northeast-1:808225968452:service/tesaki-test-230130/service-instance/tesaki-test-srv-230130",
     "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:service-template/worker-ecs-ec2-svc",

@@ -1,6 +1,6 @@
 {
-  "deploymentId" : "62b3d809-1f03-49a2-aa50-f4d8133eaf63",
-  "isResourceDeleted" : false,
+  "deploymentId" : "<proton-resource-deleted>",
+  "isResourceDeleted" : true,
   "resourceMetadata" : {
     "arn" : "arn:aws:proton:ap-northeast-1:808225968452:service/dev-website/service-instance/tesaki-test-srv-230131",
     "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:service-template/load-balanced-ecs-ec2-svc",

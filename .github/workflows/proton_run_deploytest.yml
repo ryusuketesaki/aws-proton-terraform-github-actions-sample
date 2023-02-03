@@ -161,7 +161,9 @@ jobs:
 
     - name: proton get-service
       id: tf_init
-      run: aws proton --region ap-northeast-1 get-service --name pipeline | jq -r .service.spec > service.yaml
+      run: |
+        aws proton --region ap-northeast-1 get-service --name pipeline | jq -r .service.spec > service.yaml
+        cat service.yaml
 
 
   # terraform:

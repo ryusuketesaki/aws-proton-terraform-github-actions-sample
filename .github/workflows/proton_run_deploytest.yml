@@ -60,80 +60,80 @@ jobs:
 #           exit 1
 #         fi
     
-    - name: Get data
-      id: get-data
-      run: |
-        modified_resource_arn=$(jq -r '(.resourceMetadata.arn // .componentMetadata.arn)' ${{ steps.find-modified.outputs.deployment-metadata-path }})
-        echo "::set-output name=resource_arn::$modified_resource_arn"
+#     - name: Get data
+#       id: get-data
+#       run: |
+#         modified_resource_arn=$(jq -r '(.resourceMetadata.arn // .componentMetadata.arn)' ${{ steps.find-modified.outputs.deployment-metadata-path }})
+#         echo "::set-output name=resource_arn::$modified_resource_arn"
         
-        IFS=':'
-        read -a split_arn <<< "$modified_resource_arn"
-        proton_region=${split_arn[3]}
-        echo "::set-output name=proton_region::$proton_region"
+#         IFS=':'
+#         read -a split_arn <<< "$modified_resource_arn"
+#         proton_region=${split_arn[3]}
+#         echo "::set-output name=proton_region::$proton_region"
 
-        deployment_id=$(jq -r '.deploymentId' ${{ steps.find-modified.outputs.deployment-metadata-path }})
-        echo "::set-output name=deployment_id::$deployment_id"
+#         deployment_id=$(jq -r '.deploymentId' ${{ steps.find-modified.outputs.deployment-metadata-path }})
+#         echo "::set-output name=deployment_id::$deployment_id"
 
-        is_deleted=$(jq -r '.isResourceDeleted' ${{ steps.find-modified.outputs.deployment-metadata-path }})
-        echo "::set-output name=is_deleted::$is_deleted"
+#         is_deleted=$(jq -r '.isResourceDeleted' ${{ steps.find-modified.outputs.deployment-metadata-path }})
+#         echo "::set-output name=is_deleted::$is_deleted"
 
 
-        if [[ "$modified_resource_arn" == *":environment/"* ]]; then
-          environment_name=${modified_resource_arn##*/}
-          working_directory="$environment_name/"
-        elif [[ "$modified_resource_arn" == *"/service-instance/"* ]]; then
-          environment_arn=$(jq -r '.resourceMetadata.environmentArn' ${{ steps.find-modified.outputs.deployment-metadata-path }})
-          environment_name=${environment_arn##*/}
+#         if [[ "$modified_resource_arn" == *":environment/"* ]]; then
+#           environment_name=${modified_resource_arn##*/}
+#           working_directory="$environment_name/"
+#         elif [[ "$modified_resource_arn" == *"/service-instance/"* ]]; then
+#           environment_arn=$(jq -r '.resourceMetadata.environmentArn' ${{ steps.find-modified.outputs.deployment-metadata-path }})
+#           environment_name=${environment_arn##*/}
 
-          resource_portion=${modified_resource_arn##*:}
-          IFS='/'
-          read -a split_resources <<< "$resource_portion"
+#           resource_portion=${modified_resource_arn##*:}
+#           IFS='/'
+#           read -a split_resources <<< "$resource_portion"
 
-          service_name=${split_resources[1]}
-          instance_name=${split_resources[3]}
+#           service_name=${split_resources[1]}
+#           instance_name=${split_resources[3]}
 
-          working_directory=$environment_name/$service_name-$instance_name/
-        elif [[ "$modified_resource_arn" == *"/pipeline"* ]]; then
-          environment_name="pipeline"
+#           working_directory=$environment_name/$service_name-$instance_name/
+#         elif [[ "$modified_resource_arn" == *"/pipeline"* ]]; then
+#           environment_name="pipeline"
 
-          resource_portion=${modified_resource_arn##*:}
-          IFS='/'
-          read -a split_resources <<< "$resource_portion"
+#           resource_portion=${modified_resource_arn##*:}
+#           IFS='/'
+#           read -a split_resources <<< "$resource_portion"
 
-          service_name=${split_resources[1]}
+#           service_name=${split_resources[1]}
 
-          working_directory=$service_name/pipeline
-        elif [[ "$modified_resource_arn" == *":component/"* ]]; then
-          environment_arn=$(jq -r '.componentMetadata.environmentArn' ${{ steps.find-modified.outputs.deployment-metadata-path }})
-          environment_name=${environment_arn##*/}
-          resource_portion=${modified_resource_arn##*:}
-          IFS='/'
-          read -a split_resources <<< "$resource_portion"
-          component_name=${split_resources[1]}
-          working_directory=$environment_name/$component_name/  
-        fi
+#           working_directory=$service_name/pipeline
+#         elif [[ "$modified_resource_arn" == *":component/"* ]]; then
+#           environment_arn=$(jq -r '.componentMetadata.environmentArn' ${{ steps.find-modified.outputs.deployment-metadata-path }})
+#           environment_name=${environment_arn##*/}
+#           resource_portion=${modified_resource_arn##*:}
+#           IFS='/'
+#           read -a split_resources <<< "$resource_portion"
+#           component_name=${split_resources[1]}
+#           working_directory=$environment_name/$component_name/  
+#         fi
 
-        if [[ $(jq -r --arg env $environment_name 'has($env)' env_config.json) = "true" ]]; then
-          role_arn=$(jq -r --arg env $environment_name '.[$env]["role"]' env_config.json)
-          target_region=$(jq -r --arg env $environment_name '.[$env]["region"]' env_config.json)
-          state_bucket=$(jq -r --arg env $environment_name '.[$env]["state_bucket"]' env_config.json)   
-        else     
-          if [[ $(jq -r --arg env $environment_name 'has("*")' env_config.json) = "true" ]]; then
-            role_arn=$(jq -r --arg env $environment_name '.["*"]["role"]' env_config.json)
-            target_region=$(jq -r --arg env $environment_name '.["*"]["region"]' env_config.json)
-            state_bucket=$(jq -r --arg env $environment_name '.["*"]["state_bucket"]' env_config.json)
-          else
-            echo "Missing $environment_name or * from env_config.json, exiting"
-            exit 1
-          fi
-        fi
+#         if [[ $(jq -r --arg env $environment_name 'has($env)' env_config.json) = "true" ]]; then
+#           role_arn=$(jq -r --arg env $environment_name '.[$env]["role"]' env_config.json)
+#           target_region=$(jq -r --arg env $environment_name '.[$env]["region"]' env_config.json)
+#           state_bucket=$(jq -r --arg env $environment_name '.[$env]["state_bucket"]' env_config.json)   
+#         else     
+#           if [[ $(jq -r --arg env $environment_name 'has("*")' env_config.json) = "true" ]]; then
+#             role_arn=$(jq -r --arg env $environment_name '.["*"]["role"]' env_config.json)
+#             target_region=$(jq -r --arg env $environment_name '.["*"]["region"]' env_config.json)
+#             state_bucket=$(jq -r --arg env $environment_name '.["*"]["state_bucket"]' env_config.json)
+#           else
+#             echo "Missing $environment_name or * from env_config.json, exiting"
+#             exit 1
+#           fi
+#         fi
         
-        echo "::set-output name=working_directory::$working_directory"
-        echo "::set-output name=environment::$environment_name"
+#         echo "::set-output name=working_directory::$working_directory"
+#         echo "::set-output name=environment::$environment_name"
         
-        echo "::set-output name=role_arn::$role_arn"
-        echo "::set-output name=target_region::$target_region"
-        echo "::set-output name=state_bucket::$state_bucket"
+#         echo "::set-output name=role_arn::$role_arn"
+#         echo "::set-output name=target_region::$target_region"
+#         echo "::set-output name=state_bucket::$state_bucket"
 
   deploy-test:
     name: 'deploy-test'

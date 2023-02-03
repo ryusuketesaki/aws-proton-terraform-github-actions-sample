@@ -1,7 +1,7 @@
 # This is a workflow created to run based on a commit made by AWS Proton
 # It only works if there is only one resource modified as part of the commit.
 
-name: 'proton-run'
+name: 'proton-run-deploytest'
 
 on:
   workflow_dispatch:
@@ -32,10 +32,11 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
-      
-    - name: Get changed files
-      id: files
-      uses: jitterbit/get-changed-files@v1
+  
+# This action only supports pull requests and pushes, workflow_dispatch events are not supported. Please submit an issue on this action's GitHub repo if you believe this in correct.  
+#     - name: Get changed files
+#       id: files
+#       uses: jitterbit/get-changed-files@v1
       
     - name: Find modified resource
       id: find-modified

@@ -164,7 +164,7 @@ jobs:
         role-session-name: TF-Github-Actions
         mask-aws-account-id: 'no'
 
-    - name: Terraform Init
+    - name: proton get-service
       id: tf_init
       run: aws proton --region ap-northeast-1 get-service --name pipeline | jq -r .service.spec > service.yaml
 

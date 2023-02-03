@@ -38,27 +38,27 @@ jobs:
 #       id: files
 #       uses: jitterbit/get-changed-files@v1
       
-    - name: Find modified resource
-      id: find-modified
-      run: |
-        found=false
-        for changed_file in ${{ steps.files.outputs.all }}; do
-          if [[ "$changed_file" == *".proton/deployment-metadata.json" ]]; then
-            echo "found file"
-            if [[ "$found" == true ]]; then
-              echo "More than one resource found to have a new deployment, I'm not sure which one to update, exiting."
-              exit 1
-            fi
-            echo "setting found to true"
-            found=true
-            echo "setting outputs"
-            echo "::set-output name=deployment-metadata-path::$changed_file"
-          fi
-        done
-        if [[ "$found" == false ]]; then
-          echo "No change made to deployment-metadata.json, exiting"
-          exit 1
-        fi
+#     - name: Find modified resource
+#       id: find-modified
+#       run: |
+#         found=false
+#         for changed_file in ${{ steps.files.outputs.all }}; do
+#           if [[ "$changed_file" == *".proton/deployment-metadata.json" ]]; then
+#             echo "found file"
+#             if [[ "$found" == true ]]; then
+#               echo "More than one resource found to have a new deployment, I'm not sure which one to update, exiting."
+#               exit 1
+#             fi
+#             echo "setting found to true"
+#             found=true
+#             echo "setting outputs"
+#             echo "::set-output name=deployment-metadata-path::$changed_file"
+#           fi
+#         done
+#         if [[ "$found" == false ]]; then
+#           echo "No change made to deployment-metadata.json, exiting"
+#           exit 1
+#         fi
     
     - name: Get data
       id: get-data

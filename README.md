@@ -1,3 +1,52 @@
+## AWS Proton の Terraform OpenSource GitHub Actions 自動化テンプレート
+
+いらっしゃいませ！ このリポジトリは、Proton が Terraform オープン ソースと連携してインフラストラクチャをプロビジョニングする方法をテストするのに役立ちます。 このリポジトリには、次の 2 つがあります。
+
+1. 基礎となる役割と権限の設定を支援する CloudFormation テンプレート (GitHubConfiguration.yaml)
+2. このリポジトリへのコミットに基づいて Terraform オープン ソースを実行する GitHub アクション タスク
+
+Terraform 用に作成されたときに AWS Proton テンプレートがどのように見えるかの例を探している場合は、[aws-samples/aws-proton-terraform-sample-templates](https://github.com/aws- samples/aws-proton-terraform-sample-templates)
+
+＃＃ 方法：
+
+次のものが必要です。
+- `$ENVIRONMENT_NAME`: 作成する予定の環境の名前。これは任意の名前にすることができます
+- `$REGION`: このサービスをデプロイするリージョン
+- `$GITHUB_USER`: このリポジトリをフォークできる GitHub アカウント
+
+以下の手順でこれらの文字列が表示された場合は、選択した値に置き換える必要があります。
+
+1. このリポジトリから新しいリポジトリを作成します
+    - このテンプレートを開始点として使用して変更を加えることを計画している場合、これはリポジトリ テンプレートであるため、[このテンプレートを使用] をクリックするだけで、このテンプレートの正確なコピーである新しいリポジトリがアカウントに作成されます。 .
+    - 実際に変更を加える予定がない場合は、このテンプレートをフォークして、更新された場合にそれらの更新を取得することもできます。
+2. Github アクションを使用して Terraform テンプレートをデプロイし、Proton にデプロイ ステータスを通知します。 [proton_run.yml](https://github.com/aws-samples/aws-proton-terraform-github-actions-sample/blob/main/.github/workflows/proton_run. yml)。 フォークされたリポジトリでは、デフォルトでアクションが有効になっていません。[このページ](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your- それらを有効にする方法については、repository/managing-github-actions-settings-for-a-repository) を参照してください。
+3. アカウントに CodeStar 接続が設定されていることを確認します。
+    前のステップでレポをフォークしました。 設定方法については、[このドキュメント](https://docs.aws.amazon.com/dtconsole/latest/userguide/connections-create.html)を参照してください。
+4. CloudFormation (https://aws.amazon.com/cloudformation/) を介して GitHubConfiguration.yaml を実行します。 これにより、GitHub Actions がアカウントにリソースをプロビジョニングするために使用するロールと、Terraform オープン ソースの状態ファイルを保存するための S3 バケットが作成されます。 S3 バケットを作成して状態ファイルを保存するために使用するため、スタック名にはすべて小文字の名前を使用してください。
+```
+aws cloudformation create-stack --stack-name aws-proton-terraform-role-stack \
+    --template-body ファイル:///$PWD/GitHubConfiguration.yaml \
+    --parameters ParameterKey=FullRepoName,ParameterValue=$GITHUB_USER/aws-proton-terraform-github-actions-sample \
+    --capabilities CAPABILITY_NAMED_IAM
+```
+5. ファイル「env_config.json」を開きます。 キーが「ENVIRONMENT_NAME」、「role」が(3)で作成されたスタックからの「Role」出力、および「REGION」のリージョンである構成辞書に新しいオブジェクトを追加します。 これにより、デプロイに使用するロールとリージョンが Terraform に通知されます。 このファイルにロールを追加することで、環境ごとに異なるロールを使用できます
+6. 同じファイルで、(3) からの `BucketName` 出力で `state_bucket` を更新します。 これにより、状態ファイルを保存する場所が Terraform に通知されます。
+7. 変更をコミットし、フォークされたリポジトリにプッシュします。
+8. この時点で、デプロイする環境テンプレートを登録する必要があります。 例が必要な場合は、[aws-samples/aws-proton-terraform-sample-templates](https://github.com/aws-samples/aws-proton-terraform-sample-templates) にアクセスしてください。 試してみるべきいくつかのオプションがあります。
+9. [こちら] (https://docs.aws.amazon.com/proton/latest/adminguide/ag-create-repo.html) の手順に従って、リポジトリを Proton に登録します。
+10. 次のコマンドを使用して指示に従い、環境を Proton にデプロイします。 `GITHUB_USER` を、フォークされたリポジトリを持つ GitHub アカウントの名前に変更します。 詳細については、[こちら] のドキュメントを参照してください (https://docs.aws.amazon.com/proton/latest/adminguide/ag-create-env.html#ag-create-env-pull-request)
+```
+  aws proton create-environment \
+         --name $ENVIRONMENT_NAME \
+         --template-name "ENVIRONMENT_TEMPLATE_NAME" \
+         --template-major-version "1" \
+         --provisioning-repository="branch=main,name=$GITHUB_USER/aws-proton-terraform-github-actions-sample,provider=GITHUB" \
+         --スペックファイル:///$PWD/specs/env-spec.yml
+```
+11. デプロイをトリガーした直後に、リポジトリに戻ってプル リクエストを確認します。 マージしたら、Proton に戻り、新しく作成された環境の更新されたステータスを確認できます。
+
+ご質問やチケットのオープンはお気軽に
+--
 ## Terraform OpenSource GitHub Actions automation template for AWS Proton
 
 Welcome! This repository should help you test how Proton works with Terraform Open Source to provision your infrastructure. In this repository you will find two things:

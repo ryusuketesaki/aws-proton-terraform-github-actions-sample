@@ -159,12 +159,48 @@ jobs:
         role-session-name: TF-Github-Actions
         mask-aws-account-id: 'no'
 
-    - name: proton get-service
-      id: tf_init
-      run: |
-        aws proton --region ap-northeast-1 get-service --name pipeline | jq -r .service.spec > service.yaml
-        cat service.yaml
+    # - name: proton get-service
+    #   id: tf_init
+    #   run: |
+    #     aws proton --region ap-northeast-1 get-service --name pipeline | jq -r .service.spec > service.yaml
+    #     cat service.yaml
 
+    - name: install
+      id: install
+      run: |
+        pip3 install --upgrade --user awscli
+        echo 'f6bd1536a743ab170b35c94ed4c7c4479763356bd543af5d391122f4af852460  yq_linux_amd64' > yq_linux_amd64.sha
+        wget https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64
+        sha256sum -c yq_linux_amd64.sha
+        mv yq_linux_amd64 /usr/bin/yq
+        chmod +x /usr/bin/yq
+  
+    - name: pre_build
+      id: pre_build
+      run: |
+        cd ${{ github.repository }}/ecs-static-website
+        ls -al
+        $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+        echo 'add your unit test command here'
+  
+    - name: build
+      id: build
+      run: |
+        IMAGE_REPO_NAME=$repo_name
+        IMAGE_TAG=${{ github.sha }}
+        IMAGE_ID=808225968452.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
+        docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f Dockerfile .
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_ID;
+        docker push $IMAGE_ID
+  
+    - name: post_build
+      id: build
+      run: |
+        aws proton --region $AWS_DEFAULT_REGION get-service --name $service_name | jq -r .service.spec > service.yaml
+        # protonからサービスの情報を取得。作業用として、service.yamlに書き出す
+        yq w service.yaml 'instances[*].spec.image' \"$IMAGE_ID\" > rendered_service.yaml
+        # service.yamlのうち直前のbuildコマンドで作成したIMAGE_IDを更新
+        cat rendered_service.yaml
 
   # terraform:
   #   name: 'Terraform'

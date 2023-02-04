@@ -194,7 +194,7 @@ jobs:
         docker push $IMAGE_ID
   
     - name: post_build
-      id: build
+      id: post_build
       run: |
         aws proton --region $AWS_DEFAULT_REGION get-service --name $service_name | jq -r .service.spec > service.yaml
         # protonからサービスの情報を取得。作業用として、service.yamlに書き出す

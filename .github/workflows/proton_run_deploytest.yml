@@ -188,7 +188,7 @@ jobs:
       run: |
         docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f ecs-static-website/Dockerfile .
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
-        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG latest
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:latest
         docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:latest
   

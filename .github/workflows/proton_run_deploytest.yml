@@ -185,12 +185,11 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_REPO_NAME: ${{ github.repository }}
         IMAGE_TAG: ${{ github.sha }}
-        IMAGE_ID: $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
       run: |
         docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f ecs-static-website/Dockerfile .
-        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_ID
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG latest
-        docker push $IMAGE_ID
+        docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker push latest
   
     - name: post_build

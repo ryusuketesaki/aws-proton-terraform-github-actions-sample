@@ -175,8 +175,9 @@ jobs:
         echo 'debug'
         ls -al
         ls -al /usr
-        mv yq_linux_amd64 /usr/bin/yq
-        chmod +x /usr/bin/yq
+        echo 'debug'
+        sudo mv yq_linux_amd64 /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
   
     - name: pre_build
       id: pre_build

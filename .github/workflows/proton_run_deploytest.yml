@@ -10,10 +10,7 @@ jobs:
   get-deployment-data:
     name: Get Deployment Data
     runs-on: ubuntu-latest
-    env:
-      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      IMAGE_REPO_NAME: ${{ github.repository }}
-      IMAGE_TAG: ${{ github.sha }}
+
     outputs:
       role_arn: arn:aws:iam::808225968452:role/ExampleGithubRole
       environment: tesaki-testenv-fargate
@@ -184,19 +181,24 @@ jobs:
   
     - name: build
       id: build
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_REPO_NAME: ${{ github.repository }}
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f ecs-static-website/Dockerfile .
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $ECR_REGISTRY/$IMAGE_REPO_NAME:latest
         docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker push $ECR_REGISTRY/$IMAGE_REPO_NAME:latest
+        echo "image_id=$ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG" >> $GITHUB_ENV
   
     - name: post_build
       id: post_build
       run: |
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} get-service --name pipeline | jq -r .service.spec > service.yaml
         # protonからサービスの情報を取得。作業用として、service.yamlに書き出す
-        yq w service.yaml 'instances[*].spec.image' \"$IMAGE_ID\" > rendered_service.yaml
+        yq w service.yaml 'instances[*].spec.image' \"${{ env.image_id }}\" > rendered_service.yaml
         # service.yamlのうち直前のbuildコマンドで作成したIMAGE_IDを更新
         cat rendered_service.yaml
 

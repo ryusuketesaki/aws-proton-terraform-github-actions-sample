@@ -187,7 +187,7 @@ jobs:
         IMAGE_TAG: ${{ github.sha }}
         IMAGE_ID: $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
       run: |
-        docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f Dockerfile .
+        docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f ecs-static-website/Dockerfile .
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_ID
         docker tag $IMAGE_REPO_NAME:$IMAGE_TAG latest
         docker push $IMAGE_ID

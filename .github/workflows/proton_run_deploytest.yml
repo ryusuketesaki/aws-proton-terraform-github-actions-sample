@@ -179,24 +179,19 @@ jobs:
         sudo mv yq_linux_amd64 /usr/bin/yq
         sudo chmod +x /usr/bin/yq
   
-    - name: pre_build
-      id: pre_build
-      run: |
-        ls -al
-        cd ${PWD}/ecs-static-website
-        ls -al
-        $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-        echo 'add your unit test command here'
-  
     - name: build
       id: build
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_REPO_NAME: ${{ github.repository }}
+        IMAGE_TAG: ${{ github.sha }}
+        IMAGE_ID: $ECR_REGISTRY/$IMAGE_REPO_NAME:$IMAGE_TAG
       run: |
-        IMAGE_REPO_NAME=$repo_name
-        IMAGE_TAG=${{ github.sha }}
-        IMAGE_ID=808225968452.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
         docker build -t $IMAGE_REPO_NAME:$IMAGE_TAG -f Dockerfile .
-        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_ID;
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_ID
+        docker tag $IMAGE_REPO_NAME:$IMAGE_TAG latest
         docker push $IMAGE_ID
+        docker push latest
   
     - name: post_build
       id: post_build

@@ -174,7 +174,7 @@ jobs:
         sha256sum -c yq_linux_amd64.sha
         echo 'debug'
         ls -al
-        ls /usr
+        ls -al /usr
         mv yq_linux_amd64 /usr/bin/yq
         chmod +x /usr/bin/yq
   

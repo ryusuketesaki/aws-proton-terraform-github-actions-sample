@@ -172,17 +172,14 @@ jobs:
         echo 'f6bd1536a743ab170b35c94ed4c7c4479763356bd543af5d391122f4af852460  yq_linux_amd64' > yq_linux_amd64.sha
         wget https://github.com/mikefarah/yq/releases/download/3.4.0/yq_linux_amd64
         sha256sum -c yq_linux_amd64.sha
-        echo 'debug'
-        ls -al
-        ls -al /usr
-        echo 'debug'
         sudo mv yq_linux_amd64 /usr/bin/yq
         sudo chmod +x /usr/bin/yq
   
     - name: pre_build
       id: pre_build
       run: |
-        cd ${{ github.repository }}/ecs-static-website
+        ls -al
+        cd ${PWD}/ecs-static-website
         ls -al
         $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
         echo 'add your unit test command here'

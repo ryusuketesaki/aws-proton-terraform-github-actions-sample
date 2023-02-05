@@ -10,10 +10,10 @@ jobs:
   get-deployment-data:
     name: Get Deployment Data
     runs-on: ubuntu-latest
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        IMAGE_REPO_NAME: ${{ github.repository }}
-        IMAGE_TAG: ${{ github.sha }}
+    env:
+      ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      IMAGE_REPO_NAME: ${{ github.repository }}
+      IMAGE_TAG: ${{ github.sha }}
     outputs:
       role_arn: arn:aws:iam::808225968452:role/ExampleGithubRole
       environment: tesaki-testenv-fargate

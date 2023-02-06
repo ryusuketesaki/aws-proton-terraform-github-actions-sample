@@ -202,6 +202,25 @@ jobs:
         # service.yamlのうち直前のbuildコマンドで作成したIMAGE_IDを更新
         cat rendered_service.yaml
 
+    - name: proton deploy
+      id: proton deploy
+      run: |
+        echo "aws proton update-service-instance"
+        aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} update-service-instance  \
+        --deployment-type CURRENT_VERSION \ #マイナーバージョンまたはメジャーバージョンを更新しない
+        # --name $service_instance_name \
+        --name tesaki-test-0206 \
+        # --service-name $service_name \
+        --service-name pipeline \
+        --spec rendered_service.yaml
+
+        echo "aws proton wait service-instance-deployed"
+        aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} wait service-instance-deployed \
+        --name tesaki-test-0206 --service-name pipeline
+
+
+
+
   # terraform:
   #   name: 'Terraform'
   #   needs: get-deployment-data

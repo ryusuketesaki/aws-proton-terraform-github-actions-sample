@@ -203,7 +203,7 @@ jobs:
         cat rendered_service.yaml
 
     - name: proton deploy
-      id: proton deploy
+      id: proton_deploy
       run: |
         echo "aws proton update-service-instance"
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} update-service-instance  \

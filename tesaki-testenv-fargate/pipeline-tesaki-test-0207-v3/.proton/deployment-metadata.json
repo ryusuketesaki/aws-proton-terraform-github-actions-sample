@@ -1,0 +1,11 @@
+{
+  "deploymentId" : "00087deb-45e5-4b70-a3b0-4813c732b951",
+  "isResourceDeleted" : false,
+  "resourceMetadata" : {
+    "arn" : "arn:aws:proton:ap-northeast-1:808225968452:service/pipeline/service-instance/tesaki-test-0207-v3",
+    "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:service-template/load-balanced-fargate-svc",
+    "templateMajorVersion" : "1",
+    "templateMinorVersion" : "6",
+    "environmentArn" : "arn:aws:proton:ap-northeast-1:808225968452:environment/tesaki-testenv-fargate"
+  }
+}

@@ -1,5 +1,9 @@
 /*
-This file is no longer managed by AWS Proton. The associated resource has been deleted in Proton.
+This file is managed by AWS Proton. Any changes made directly to this file will be overwritten the next time AWS Proton performs an update.
+
+To manage this resource, see AWS Proton Resource: arn:aws:proton:ap-northeast-1:808225968452:service/pipeline/pipeline
+
+If the resource is no longer accessible within AWS Proton, it may have been deleted and may require manual cleanup.
 */
 
 resource "aws_ecr_repository" "ecr_repo" {
@@ -92,7 +96,10 @@ resource "aws_codebuild_project" "build_project" {
                     "post_build": {
                       "commands": [
                         "aws proton --region $AWS_DEFAULT_REGION get-service --name $service_name | jq -r .service.spec > service.yaml",
-                        "yq w service.yaml 'instances[*].spec.image' \"$IMAGE_ID\" > rendered_service.yaml"
+                        "pwd && ls -al",
+                        "cat service.yaml",
+                        "yq w service.yaml 'instances[*].spec.image' \"$IMAGE_ID\" > rendered_service.yaml",
+                        "cat rendered_service.yaml"
                       ]
                     }
                   },
@@ -147,6 +154,7 @@ resource "aws_codebuild_project" "deploy_project" {
               "build": {
                 "commands": [
                   "pip3 install --upgrade --user awscli",
+                  "pwd && ls -al && cat ecs-static-website/rendered_service.yaml",
                   "aws proton --region $AWS_DEFAULT_REGION update-service-instance --deployment-type CURRENT_VERSION --name $service_instance_name --service-name $service_name --spec file://${var.pipeline.inputs.service_dir}/rendered_service.yaml",
                   "aws proton --region $AWS_DEFAULT_REGION wait service-instance-deployed --name $service_instance_name --service-name $service_name"
                 ]

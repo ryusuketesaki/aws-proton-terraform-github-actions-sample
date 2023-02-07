@@ -1,6 +1,6 @@
 {
-  "deploymentId" : "77523a25-521c-4221-a549-9f95c23bd203",
-  "isResourceDeleted" : false,
+  "deploymentId" : "<proton-resource-deleted>",
+  "isResourceDeleted" : true,
   "resourceMetadata" : {
     "arn" : "arn:aws:proton:ap-northeast-1:808225968452:service/pipeline/pipeline",
     "templateArn" : "arn:aws:proton:ap-northeast-1:808225968452:service-template/load-balanced-fargate-svc",

@@ -209,14 +209,14 @@ jobs:
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} update-service-instance  \
         --deployment-type CURRENT_VERSION \ #マイナーバージョンまたはメジャーバージョンを更新しない
         # --name $service_instance_name \
-        --name tesaki-test-0206 \
+        --name tesaki-test-srv-0209 \
         # --service-name $service_name \
         --service-name pipeline \
-        --spec rendered_service.yaml
+        --spec "file://rendered_service.yaml"
 
         echo "aws proton wait service-instance-deployed"
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} wait service-instance-deployed \
-        --name tesaki-test-0206 --service-name pipeline
+        --name tesaki-test-srv-0209 --service-name pipeline
 
 
 

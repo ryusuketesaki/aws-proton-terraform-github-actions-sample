@@ -208,10 +208,8 @@ jobs:
         echo "aws proton update-service-instance"
         pwd && ls -al && cat rendered_service.yaml        
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} update-service-instance  \
-        --deployment-type CURRENT_VERSION \ #マイナーバージョンまたはメジャーバージョンを更新しない
-        # --name $service_instance_name \
+        --deployment-type CURRENT_VERSION \
         --name tesaki-test-srv-0209 \
-        # --service-name $service_name \
         --service-name pipeline \
         --spec "file://rendered_service.yaml"
 

@@ -198,7 +198,7 @@ jobs:
       run: |
         aws proton --region ${{ needs.get-deployment-data.outputs.target_region }} get-service --name pipeline | jq -r .service.spec > service.yaml
         # protonからサービスの情報を取得。作業用として、service.yamlに書き出す
-        yq w service.yaml 'instances[*].spec.image' \${{ env.image_id }}\ > rendered_service.yaml
+        yq w service.yaml 'instances[*].spec.image' \${{ env.image_id }} > rendered_service.yaml
         # service.yamlのうち直前のbuildコマンドで作成したIMAGE_IDを更新
         pwd && ls -al && cat rendered_service.yaml
 

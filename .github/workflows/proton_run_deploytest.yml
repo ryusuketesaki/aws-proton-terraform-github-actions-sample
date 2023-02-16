@@ -3,8 +3,20 @@
 
 name: 'proton-run-deploytest'
 
+# on:
+#   workflow_dispatch:
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - reopened
+    paths:
+      - '**/.proton/deployment-metadata.json'
+  push:
+    branches:
+      - main
+    paths:
+      - '**/.proton/deployment-metadata.json'
 
 jobs:
   get-deployment-data:

@@ -4,8 +4,14 @@
 name: 'proton-run-deploytest'
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+       - main
   
+
+
+
+
 jobs:
   get-deployment-data:
     name: Get Deployment Data
